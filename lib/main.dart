@@ -4,6 +4,7 @@ import 'package:psh_finance/controllers/salary_calculator.dart';
 import 'package:psh_finance/helper.dart';
 import 'package:psh_finance/models/employee.dart';
 import 'package:psh_finance/models/payment.dart';
+import 'package:psh_finance/services/payroll.dart';
 
 /// Flutter code sample for [DataTable].
 
@@ -16,6 +17,15 @@ class DataTableExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        floatingActionButton: FloatingActionButton(onPressed: () async {
+          Employee e = Employee("Ram", 10000000, 250000, true);
+          print("ram");
+          var res = PayrollService().addEmployee(e);
+          res.then((value) {
+            var msg = value ? "success" : "false";
+            print(msg);
+          });
+        }),
         appBar: AppBar(title: const Text('DataTable Sample')),
         body: ChangeNotifierProvider(
           create: (context) => SalaryCalculatorController(),
@@ -44,7 +54,7 @@ class DataTableExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Employee emp = Employee("1", "Sanjeev", 18000, 3000, true);
+    // Employee emp = Employee("1", "Sanjeev", 18000, 3000, true);
     Payment payment =
         Payment(id: "1", amount: 5000, timeStamp: DateTime.now(), payeeId: "1");
     return Center(
