@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:psh_finance/models/employee.dart';
 import 'package:psh_finance/models/monthly_stats.dart';
 import 'package:provider/provider.dart';
+import 'package:psh_finance/services/payroll.dart';
 
 import '../models/payment.dart';
 
@@ -23,8 +24,37 @@ class SalaryCalculatorController extends ChangeNotifier {
   final List<SalaryCalculatorRow> _rows = [];
   int month = DateTime.now().month;
   int year = DateTime.now().year;
+  bool _isLoading = true;
+  bool _isInitialized = false;
 
-  void init() {}
+  bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
+
+  void init() async {
+    var response = await PayrollService().getEmployees();
+    if (response.success) {
+      print(response.data);
+      for (var e in response.data as List<Employee>) {
+        print("....");
+        var rowData = SalaryCalculatorRowData(
+          employee: e,
+          monthlyStats: MonthlyStats(employee: e),
+          payments: [
+            Payment(amount: 0, timeStamp: DateTime.now().toUtc(), payee: e)
+          ],
+        );
+        _employees.add(e);
+        _rowsData.add(rowData);
+        _rows.add(SalaryCalculatorRow(rowData));
+      }
+    } else {
+      print(response.data);
+    }
+    _isLoading = false;
+    _isInitialized = true;
+    notifyListeners();
+  }
+
   void changeMonth(int month) {}
   void changeyear(int year) {}
   void addPayment(Employee employee, double amount, DateTime timeStamp) {}

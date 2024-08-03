@@ -1,12 +1,14 @@
+import 'package:psh_finance/models/employee.dart';
+
 class Payment {
-  final String id;
+  final String? id;
   final double amount;
   final DateTime timeStamp;
-  final String payeeId;
+  final Employee payee;
 
   Payment(
-      {required this.id,
+      {this.id,
       required this.amount,
       required this.timeStamp,
-      required this.payeeId});
+      required this.payee});
 }
